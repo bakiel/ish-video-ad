@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>ISH - Building Tomorrow's Legacy Today</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Source Sans 3',sans-serif;display:flex;align-items:center;justify-content:center}
+.viewport{width:1920px;height:1080px;position:relative;overflow:hidden;background:#0D2137;transform-origin:center center}
+
+/* Scenes */
+.scene{position:absolute;inset:0;opacity:0;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.scene.active{pointer-events:auto}
+.scene-bg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:brightness(0.35);will-change:transform}
+.scene-overlay{position:absolute;inset:0;z-index:1}
+.scene-content{position:relative;z-index:2;text-align:center;padding:0 120px;width:100%}
+
+/* Typography */
+.serif{font-family:'Playfair Display',Georgia,serif}
+.sans{font-family:'Source Sans 3','Segoe UI',sans-serif}
+.gold{color:#D4A853}
+.white{color:#FFFFFF}
+.navy{color:#0D2137}
+.light{color:rgba(255,255,255,0.7)}
+
+/* Cinematic bars */
+.letterbox-top,.letterbox-bottom{position:absolute;left:0;right:0;height:60px;background:#000;z-index:100}
+.letterbox-top{top:0}
+.letterbox-bottom{bottom:0}
+
+/* Progress */
+.progress-bar{position:absolute;bottom:60px;left:0;height:3px;background:linear-gradient(90deg,#D4A853,#E8C878);z-index:101;transition:width 0.1s linear}
+
+/* Crown logo container */
+.crown-logo{display:inline-block}
+.crown-logo svg{filter:drop-shadow(0 4px 20px rgba(212,168,83,0.3))}
+
+/* Stats grid */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;max-width:1400px;margin:0 auto}
+.stat-card{text-align:center;padding:30px 20px;border:1px solid rgba(212,168,83,0.3);border-radius:8px;background:rgba(13,33,55,0.6);backdrop-filter:blur(10px)}
+.stat-value{font-size:56px;font-weight:800;line-height:1.1;margin-bottom:8px}
+.stat-label{font-size:18px;font-weight:400;text-transform:uppercase;letter-spacing:3px}
+
+/* Service cards */
+.services-row{display:flex;gap:24px;justify-content:center;flex-wrap:nowrap;max-width:1600px;margin:0 auto}
+.service-card{flex:1;max-width:280px;padding:28px 20px;text-align:center;border:1px solid rgba(212,168,83,0.25);border-radius:8px;background:rgba(13,33,55,0.5);backdrop-filter:blur(8px)}
+.service-icon{width:48px;height:48px;margin:0 auto 16px;border-radius:50%;background:rgba(212,168,83,0.15);display:flex;align-items:center;justify-content:center}
+.service-icon svg{width:24px;height:24px;stroke:#D4A853;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.service-name{font-size:20px;font-weight:600;margin-bottom:6px}
+
+/* Controls */
+.controls{position:absolute;bottom:80px;right:40px;z-index:102;display:flex;gap:12px;align-items:center}
+.controls span{color:rgba(255,255,255,0.4);font-size:13px;letter-spacing:1px;text-transform:uppercase}
+
+/* Play indicator */
+.play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;width:80px;height:80px;border-radius:50%;background:rgba(212,168,83,0.9);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.play-btn.show{opacity:1;pointer-events:auto}
+.play-btn svg{width:32px;height:32px;fill:#0D2137;margin-left:4px}
+
+/* Divider line */
+.gold-line{width:80px;height:2px;background:linear-gradient(90deg,transparent,#D4A853,transparent);margin:20px auto}
+
+/* CTA bottom bar */
+.cta-bar{position:absolute;bottom:80px;left:0;right:0;display:flex;justify-content:center;gap:60px;align-items:center;z-index:2}
+.cta-item{display:flex;align-items:center;gap:12px}
+.cta-item svg{width:20px;height:20px;stroke:#D4A853;fill:none;stroke-width:1.5}
+.cta-item span{font-size:18px;font-weight:500;color:rgba(255,255,255,0.9);letter-spacing:0.5px}
+
+/* Animated elements */
+.fade-up{opacity:0;transform:translateY(40px)}
+.fade-in{opacity:0}
+.scale-in{opacity:0;transform:scale(0.8)}
+</style>
+</head>
+<body>
+<div class="viewport" id="viewport">
+
+  <!-- Scene 1: Logo Reveal (0-4s) -->
+  <div class="scene" id="scene1">
+    <div class="scene-overlay" style="background:radial-gradient(ellipse at center,rgba(13,33,55,0.3) 0%,#0D2137 70%)"></div>
+    <div class="scene-content">
+      <div class="crown-logo fade-in" data-anim="fadeIn" data-delay="0.3" data-dur="1.2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 510" width="160" height="130">
+          <defs><style>.cw{fill:#ffffff}.cg{fill:#D4A853}</style></defs>
+          <polygon class="cw" points="172.5 459.5 172.5 457.5 83.5 257.5 172.5 297.5 172.5 263.5 .5 183.5 109.5 463.5 172.5 459.5"/>
+          <polygon class="cw" points="514.5 464.5 619.5 184.5 448.5 263.5 448.5 296.5 537.5 257.5 449.5 458.5 514.5 464.5"/>
+          <polygon class="cw" points="376.5 457.5 431.5 458.5 431.5 207.91 376.5 250.77 376.5 457.5"/>
+          <path class="cg" d="M433.5,181.5c-16-19-33-38-50-57-2-3-4-5-5-8l-2,2v122.74l57-44.42v-15.31h0Z"/>
+          <path class="cg" d="M305.5,56.22c.9-.46,1.92-.72,3-.72s2.1.26,3,.72v235.67l52-40.53V99.5L310.5.5l-54,100v234.26l49-38.19V56.22Z"/>
+          <polygon class="cg" points="243.5 344.89 243.5 117.5 240.5 119.5 188.5 181.5 188.5 387.76 243.5 344.89"/>
+          <polygon class="cw" points="308.5 457.5 363.5 457.5 363.5 260.9 308.5 303.77 308.5 457.5"/>
+          <polygon class="cw" points="188.5 458.5 243.5 457.5 243.5 354.42 188.5 397.29 188.5 458.5"/>
+          <polygon class="cw" points="256.5 457.5 302.5 457.5 302.5 308.44 256.5 344.29 256.5 457.5"/>
+          <path class="cw" d="M516.5,477.5c-16-1-31-3-47-4-105-8-211-5-316,0-15,3-31,1-46,4-1,0-3,1-3,2v30h413c2,0,0-5,0-7,0-4,1-24-1-25Z"/>
+        </svg>
+      </div>
+      <div class="gold-line fade-in" data-anim="fadeIn" data-delay="1.0" data-dur="0.8" style="margin:24px auto"></div>
+      <h1 class="serif white fade-up" data-anim="fadeUp" data-delay="1.2" data-dur="1.0" style="font-size:28px;font-weight:500;letter-spacing:8px;text-transform:uppercase">Isgcawu Somnotho Holdings</h1>
+      <p class="sans gold fade-up" data-anim="fadeUp" data-delay="1.8" data-dur="0.8" style="font-size:16px;letter-spacing:4px;text-transform:uppercase;margin-top:12px;font-weight:400">Building Tomorrow's Legacy Today</p>
+    </div>
+  </div>
+
+  <!-- Scene 2: Hook (4-8s) -->
+  <div class="scene" id="scene2">
+    <div class="scene-bg" id="bg2" style="background-image:url('images/construction/hero_crane_site.jpg')"></div>
+    <div class="scene-overlay" style="background:linear-gradient(to right,rgba(13,33,55,0.85) 0%,rgba(13,33,55,0.4) 50%,rgba(0,0,0,0.3) 100%)"></div>
+    <div class="scene-content" style="text-align:left;padding-left:140px;max-width:900px">
+      <p class="sans gold fade-up" data-anim="fadeUp" data-delay="0.3" data-dur="0.6" style="font-size:18px;letter-spacing:4px;text-transform:uppercase;font-weight:500;margin-bottom:20px">Since 2015</p>
+      <h1 class="serif white fade-up" data-anim="fadeUp" data-delay="0.6" data-dur="0.8" style="font-size:72px;font-weight:700;line-height:1.1">We Don't Just<br>Build Structures.</h1>
+    </div>
+  </div>
+
+  <!-- Scene 3: Pivot (8-12s) -->
+  <div class="scene" id="scene3">
+    <div class="scene-bg" id="bg3" style="background-image:url('images/construction/hero_sunset_crane.jpg')"></div>
+    <div class="scene-overlay" style="background:linear-gradient(to top,rgba(13,33,55,0.9) 0%,rgba(13,33,55,0.3) 40%,rgba(0,0,0,0.2) 100%)"></div>
+    <div class="scene-content" style="padding-top:200px">
+      <h1 class="serif gold fade-up" data-anim="fadeUp" data-delay="0.2" data-dur="1.0" style="font-size:96px;font-weight:800;line-height:1;text-shadow:0 4px 40px rgba(0,0,0,0.5)">We Build Legacy.</h1>
+      <div class="gold-line fade-in" data-anim="fadeIn" data-delay="1.0" data-dur="0.6" style="margin:30px auto;width:120px"></div>
+      <p class="sans white fade-up" data-anim="fadeUp" data-delay="1.2" data-dur="0.8" style="font-size:24px;font-weight:300;max-width:600px;margin:0 auto;line-height:1.6;opacity:0.85">Residential. Commercial. Mining.<br>Rail. General Construction.</p>
+    </div>
+  </div>
+
+  <!-- Scene 4: Stats (12-17s) -->
+  <div class="scene" id="scene4">
+    <div class="scene-bg" id="bg4" style="background-image:url('images/construction/crane_skyline.jpg')"></div>
+    <div class="scene-overlay" style="background:linear-gradient(135deg,rgba(13,33,55,0.92) 0%,rgba(13,33,55,0.75) 100%)"></div>
+    <div class="scene-content">
+      <p class="sans gold fade-up" data-anim="fadeUp" data-delay="0.2" data-dur="0.5" style="font-size:16px;letter-spacing:5px;text-transform:uppercase;margin-bottom:40px;font-weight:500">By The Numbers</p>
+      <div class="stats-grid">
+        <div class="stat-card fade-up" data-anim="fadeUp" data-delay="0.4" data-dur="0.6">
+          <div class="stat-value serif gold" data-counter="245" data-prefix="R" data-suffix="M+">R0M+</div>
+          <div class="stat-label sans light">Project Experience</div>
+        </div>
+        <div class="stat-card fade-up" data-anim="fadeUp" data-delay="0.6" data-dur="0.6">
+          <div class="stat-value serif gold" style="font-size:48px">Level 1</div>
+          <div class="stat-label sans light">B-BBEE Rating</div>
+        </div>
+        <div class="stat-card fade-up" data-anim="fadeUp" data-delay="0.8" data-dur="0.6">
+          <div class="stat-value serif gold" data-counter="100" data-suffix="%">0%</div>
+          <div class="stat-label sans light">Black Owned</div>
+        </div>
+        <div class="stat-card fade-up" data-anim="fadeUp" data-delay="1.0" data-dur="0.6">
+          <div class="stat-value serif gold" data-counter="51" data-suffix="%">0%</div>
+          <div class="stat-label sans light">Women Owned</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 5: Services (17-22s) -->
+  <div class="scene" id="scene5">
+    <div class="scene-bg" id="bg5" style="background-image:url('images/construction/commercial_building.jpg')"></div>
+    <div class="scene-overlay" style="background:linear-gradient(to bottom,rgba(13,33,55,0.88) 0%,rgba(13,33,55,0.7) 100%)"></div>
+    <div class="scene-content">
+      <p class="sans gold fade-up" data-anim="fadeUp" data-delay="0.2" data-dur="0.5" style="font-size:16px;letter-spacing:5px;text-transform:uppercase;margin-bottom:16px;font-weight:500">Our Expertise</p>
+      <h2 class="serif white fade-up" data-anim="fadeUp" data-delay="0.4" data-dur="0.6" style="font-size:48px;font-weight:700;margin-bottom:40px">Five Pillars of Construction</h2>
+      <div class="services-row">
+        <div class="service-card fade-up" data-anim="fadeUp" data-delay="0.6" data-dur="0.5">
+          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg></div>
+          <div class="service-name sans white">Residential</div>
+        </div>
+        <div class="service-card fade-up" data-anim="fadeUp" data-delay="0.75" data-dur="0.5">
+          <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M8 10h.01M16 10h.01M12 10h.01M8 14h.01M16 14h.01M12 14h.01"/></svg></div>
+          <div class="service-name sans white">Commercial</div>
+        </div>
+        <div class="service-card fade-up" data-anim="fadeUp" data-delay="0.9" data-dur="0.5">
+          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M2 20h20M6 20V8l4-4h4l4 4v12M10 14h4M10 10h4"/><circle cx="12" cy="6" r="1"/></svg></div>
+          <div class="service-name sans white">Mining</div>
+        </div>
+        <div class="service-card fade-up" data-anim="fadeUp" data-delay="1.05" data-dur="0.5">
+          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M2 17h20M6 17v-4M10 17v-4M14 17v-4M18 17v-4"/><path d="M4 13h16M2 9h20"/></svg></div>
+          <div class="service-name sans white">Rail Works</div>
+        </div>
+        <div class="service-card fade-up" data-anim="fadeUp" data-delay="1.2" data-dur="0.5">
+          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+          <div class="service-name sans white">General</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 6: Leadership (22-26s) -->
+  <div class="scene" id="scene6">
+    <div class="scene-bg" id="bg6" style="background-image:url('images/people/executive_man_marble_lobby.png')"></div>
+    <div class="scene-overlay" style="background:linear-gradient(to right,rgba(13,33,55,0.9) 0%,rgba(13,33,55,0.5) 60%,rgba(0,0,0,0.3) 100%)"></div>
+    <div class="scene-content" style="text-align:left;padding-left:140px;max-width:800px">
+      <p class="sans gold fade-up" data-anim="fadeUp" data-delay="0.2" data-dur="0.5" style="font-size:16px;letter-spacing:4px;text-transform:uppercase;font-weight:500;margin-bottom:16px">Leadership</p>
+      <h2 class="serif white fade-up" data-anim="fadeUp" data-delay="0.5" data-dur="0.8" style="font-size:60px;font-weight:700;line-height:1.15;margin-bottom:16px">Ronald Radebe</h2>
+      <div class="gold-line fade-in" data-anim="fadeIn" data-delay="1.0" data-dur="0.5" style="margin:0;margin-bottom:20px"></div>
+      <p class="sans white fade-up" data-anim="fadeUp" data-delay="1.1" data-dur="0.6" style="font-size:22px;font-weight:300;line-height:1.6;opacity:0.85">Founder & Civil Engineer<br><span class="gold" style="font-weight:500">Driving sustainable construction across South Africa</span></p>
+    </div>
+  </div>
+
+  <!-- Scene 7: CTA (26-30s) -->
+  <div class="scene" id="scene7">
+    <div class="scene-overlay" style="background:radial-gradient(ellipse at center,rgba(13,33,55,0.5) 0%,#0D2137 70%)"></div>
+    <div class="scene-content">
+      <div class="crown-logo fade-in" data-anim="fadeIn" data-delay="0.3" data-dur="0.8">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 510" width="120" height="98">
+          <defs><style>.cw2{fill:#ffffff}.cg2{fill:#D4A853}</style></defs>
+          <polygon class="cw2" points="172.5 459.5 172.5 457.5 83.5 257.5 172.5 297.5 172.5 263.5 .5 183.5 109.5 463.5 172.5 459.5"/>
+          <polygon class="cw2" points="514.5 464.5 619.5 184.5 448.5 263.5 448.5 296.5 537.5 257.5 449.5 458.5 514.5 464.5"/>
+          <polygon class="cw2" points="376.5 457.5 431.5 458.5 431.5 207.91 376.5 250.77 376.5 457.5"/>
+          <path class="cg2" d="M433.5,181.5c-16-19-33-38-50-57-2-3-4-5-5-8l-2,2v122.74l57-44.42v-15.31h0Z"/>
+          <path class="cg2" d="M305.5,56.22c.9-.46,1.92-.72,3-.72s2.1.26,3,.72v235.67l52-40.53V99.5L310.5.5l-54,100v234.26l49-38.19V56.22Z"/>
+          <polygon class="cg2" points="243.5 344.89 243.5 117.5 240.5 119.5 188.5 181.5 188.5 387.76 243.5 344.89"/>
+          <polygon class="cw2" points="308.5 457.5 363.5 457.5 363.5 260.9 308.5 303.77 308.5 457.5"/>
+          <polygon class="cw2" points="188.5 458.5 243.5 457.5 243.5 354.42 188.5 397.29 188.5 458.5"/>
+          <polygon class="cw2" points="256.5 457.5 302.5 457.5 302.5 308.44 256.5 344.29 256.5 457.5"/>
+          <path class="cw2" d="M516.5,477.5c-16-1-31-3-47-4-105-8-211-5-316,0-15,3-31,1-46,4-1,0-3,1-3,2v30h413c2,0,0-5,0-7,0-4,1-24-1-25Z"/>
+        </svg>
+      </div>
+      <div class="gold-line fade-in" data-anim="fadeIn" data-delay="0.6" data-dur="0.5" style="margin:20px auto"></div>
+      <h2 class="serif white fade-up" data-anim="fadeUp" data-delay="0.8" data-dur="0.7" style="font-size:44px;font-weight:700;margin-bottom:12px">Let's Build Together</h2>
+      <p class="sans light fade-up" data-anim="fadeUp" data-delay="1.2" data-dur="0.6" style="font-size:18px;letter-spacing:2px;text-transform:uppercase;margin-bottom:50px">Building Tomorrow's Legacy Today</p>
+      <div class="cta-bar" style="position:relative;bottom:auto;display:flex;justify-content:center;gap:60px">
+        <div class="cta-item fade-up" data-anim="fadeUp" data-delay="1.4" data-dur="0.5">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span class="sans white">079 603 7780</span>
+        </div>
+        <div class="cta-item fade-up" data-anim="fadeUp" data-delay="1.6" data-dur="0.5">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span class="sans white">info@isgcawusomnotho.co.za</span>
+        </div>
+        <div class="cta-item fade-up" data-anim="fadeUp" data-delay="1.8" data-dur="0.5">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span class="sans white">isgcawusomnotho.co.za</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cinematic letterbox -->
+  <div class="letterbox-top"></div>
+  <div class="letterbox-bottom"></div>
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+  <!-- Controls hint -->
+  <div class="controls"><span>Space to pause</span></div>
+
+  <!-- Play button (shows when paused) -->
+  <div class="play-btn" id="playBtn" onclick="togglePause()">
+    <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+  </div>
+
+</div>
+
+<script>
+// ===== TIMELINE ENGINE =====
+const TOTAL_DURATION = 32; // seconds
+const scenes = [
+  { id: 'scene1', start: 0,   end: 4.5  },
+  { id: 'scene2', start: 4,   end: 8.5  },
+  { id: 'scene3', start: 8,   end: 12.5 },
+  { id: 'scene4', start: 12,  end: 17.5 },
+  { id: 'scene5', start: 17,  end: 22.5 },
+  { id: 'scene6', start: 22,  end: 27   },
+  { id: 'scene7', start: 26.5,end: 32   },
+];
+
+const FADE_DUR = 0.6; // crossfade duration in seconds
+let time = 0;
+let playing = true;
+let lastTimestamp = null;
+let activeCounters = new Set();
+
+// Elements
+const progressBar = document.getElementById('progressBar');
+const playBtn = document.getElementById('playBtn');
+
+// ===== ANIMATION ENGINE =====
+function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+function animateElement(el, sceneTime) {
+  const anim = el.dataset.anim;
+  const delay = parseFloat(el.dataset.delay) || 0;
+  const dur = parseFloat(el.dataset.dur) || 0.6;
+  const t = Math.max(0, Math.min(1, (sceneTime - delay) / dur));
+  const e = easeOutCubic(t);
+
+  if (anim === 'fadeUp') {
+    el.style.opacity = e;
+    el.style.transform = `translateY(${(1 - e) * 40}px)`;
+  } else if (anim === 'fadeIn') {
+    el.style.opacity = e;
+  } else if (anim === 'scaleIn') {
+    el.style.opacity = e;
+    el.style.transform = `scale(${0.8 + 0.2 * e})`;
+  }
+}
+
+// Counter animation
+function animateCounters(sceneEl, sceneTime) {
+  sceneEl.querySelectorAll('[data-counter]').forEach(el => {
+    const target = parseInt(el.dataset.counter);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const delay = parseFloat(el.closest('[data-delay]')?.dataset.delay || 0) + 0.3;
+    const dur = 1.5;
+    const t = Math.max(0, Math.min(1, (sceneTime - delay) / dur));
+    const e = easeOutQuart(t);
+    const val = Math.round(target * e);
+    el.textContent = prefix + val + suffix;
+  });
+}
+
+// Ken Burns on background images
+function animateKenBurns(bgEl, sceneTime, sceneDuration) {
+  if (!bgEl) return;
+  const progress = sceneTime / sceneDuration;
+  const scale = 1 + progress * 0.08; // Subtle 8% zoom
+  const translateX = progress * -10; // Slight pan
+  bgEl.style.transform = `scale(${scale}) translateX(${translateX}px)`;
+}
+
+// ===== MAIN LOOP =====
+function update(timestamp) {
+  if (!lastTimestamp) lastTimestamp = timestamp;
+  const dt = (timestamp - lastTimestamp) / 1000;
+  lastTimestamp = timestamp;
+
+  if (playing) {
+    time += dt;
+    if (time >= TOTAL_DURATION) time = 0; // Loop
+
+    // Update progress bar
+    progressBar.style.width = (time / TOTAL_DURATION * 100) + '%';
+
+    // Update scenes
+    scenes.forEach(s => {
+      const el = document.getElementById(s.id);
+      const sceneDur = s.end - s.start;
+      const sceneTime = time - s.start;
+
+      // Calculate opacity for crossfade
+      let opacity = 0;
+      if (sceneTime >= 0 && sceneTime <= sceneDur) {
+        // Fade in
+        if (sceneTime < FADE_DUR) {
+          opacity = sceneTime / FADE_DUR;
+        }
+        // Fade out
+        else if (sceneTime > sceneDur - FADE_DUR) {
+          opacity = (sceneDur - sceneTime) / FADE_DUR;
+        }
+        // Full visible
+        else {
+          opacity = 1;
+        }
+      }
+
+      el.style.opacity = opacity;
+      el.classList.toggle('active', opacity > 0);
+
+      // Animate children if visible
+      if (opacity > 0) {
+        el.querySelectorAll('[data-anim]').forEach(child => {
+          animateElement(child, sceneTime);
+        });
+
+        // Ken Burns
+        const bg = document.getElementById('bg' + s.id.replace('scene', ''));
+        animateKenBurns(bg, sceneTime, sceneDur);
+
+        // Counters (scene 4)
+        if (s.id === 'scene4') {
+          animateCounters(el, sceneTime);
+        }
+      }
+    });
+  }
+
+  requestAnimationFrame(update);
+}
+
+// ===== CONTROLS =====
+function togglePause() {
+  playing = !playing;
+  playBtn.classList.toggle('show', !playing);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space') {
+    e.preventDefault();
+    togglePause();
+  }
+});
+
+// ===== AUTO-SCALE TO FIT WINDOW =====
+function scaleToFit() {
+  const vp = document.getElementById('viewport');
+  const scaleX = window.innerWidth / 1920;
+  const scaleY = window.innerHeight / 1080;
+  const scale = Math.min(scaleX, scaleY);
+  vp.style.transform = `scale(${scale})`;
+}
+scaleToFit();
+window.addEventListener('resize', scaleToFit);
+
+// Start
+requestAnimationFrame(update);
+</script>
+</body>
+</html>
